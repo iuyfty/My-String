@@ -12,7 +12,7 @@ private:
 	size_t capacity;
 	char* string;
 public:
-	MyString()
+	MyString() noexcept
 		:
 		string(nullptr),
 		size(0),
@@ -29,6 +29,7 @@ public:
 		size_t str_size = strlen(other);
 		this->size = str_size;
 		this->capacity = str_size;
+		this->string = nullptr;
 		try
 		{
 			this->string = new char[str_size];
@@ -119,7 +120,7 @@ public:
 	}
 	MyString& operator+=(const MyString& other)
 	{
-		if (this->capacity <= other.size + this->size)
+		if (this->capacity >= other.size + this->size)
 		{
 			for (unsigned int i = this->size, j = 0; i < other.size; ++i, ++j)
 			{
@@ -146,7 +147,6 @@ public:
 		{
 			out << string.string[i];
 		}
-		out << '\0';
 		return out;
 	}
 public:
@@ -182,7 +182,7 @@ public:
 		this->string = new_string.string;
 		new_string.string = nullptr;
 	}
-	void set_size(const size_t& new_size)
+	void resize(const size_t& new_size)
 	{
 		if (new_size < 0 || new_size >= this->size)
 			throw std::out_of_range("out of range");
@@ -251,7 +251,7 @@ public:
 			throw std::out_of_range("out of range");
 		if (this->size + 1 <= this->capacity)
 		{
-			for (unsigned int i = this->size; i != 0; ++i)
+			for (unsigned int i = this->size; i >= 0; --i)
 			{
 				if (i == index)
 				{
@@ -259,10 +259,7 @@ public:
 					this->size++;
 					return;
 				}
-				else
-				{
-					std::swap(this->string[i], this->string[i + 1]);
-				}
+				std::swap(this->string[i], this->string[i - 1]);
 			}
 		}
 		MyString new_string(this->capacity + 20); // add some capacity
@@ -273,12 +270,8 @@ public:
 			{
 				new_string.string[j] = ch;
 				j++;
-				new_string.string[j] = this->string[i];
-			}
-			else
-			{
-				new_string.string[j] = this->string[i];
-			}
+			}	
+			new_string.string[j] = this->string[i];
 		}
 		this->capacity = new_string.capacity;
 		this->size = new_string.size;
@@ -288,7 +281,13 @@ public:
 	}
 	void slice(const size_t& start, const size_t& end)
 	{
-		for (unsigned int i = start, j = 0; start != end; ++i, ++j)
+		if (start < 0 || start >= this->size)
+			throw std::out_of_range("out of range");
+		if (end < 0 || end >= this->size)
+			throw std::out_of_range("out of range");
+		if (start >= end)
+			throw std::out_of_range("start > end");
+		for (unsigned int i = start, j = 0; i < end; ++i, ++j)
 		{
 			this->string[j] = this->string[i];
 		}
@@ -297,9 +296,5 @@ public:
 	void clear()
 	{
 		this->size = 0;
-	}
-	bool empty() const
-	{
-		return this->size == 0;
 	}
 };
