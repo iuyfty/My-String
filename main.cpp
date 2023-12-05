@@ -6,9 +6,10 @@
 
 int main()
 {
+	MyString s;
+	s.set_string("hello");
 
-	std::string s("sdfsdf");
-	
+	std::cout << s;
 
 	return 0;
 }
