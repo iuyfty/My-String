@@ -27,15 +27,15 @@ public:
 	MyString(const char* other)
 	{
 		size_t str_size = strlen(other);
-		this->size = str_size;
-		this->capacity = str_size;
-		this->string = nullptr;
+		size = str_size;
+		capacity = str_size;
+		string = nullptr;
 		try
 		{
-			this->string = new char[str_size];
+			string = new char[str_size];
 			for (unsigned int i = 0; i < str_size; ++i)
 			{
-				this->string[i] = other[i];
+				string[i] = other[i];
 			}
 		}
 		catch (...)
@@ -47,14 +47,14 @@ public:
 
 	MyString(const MyString& other)
 	{
-		this->size = other.size;
-		this->capacity = other.capacity;
-		delete[] this->string;
+		size = other.size;
+		capacity = other.capacity;
+		delete[] string;
 		try {
-			this->string = new char[this->capacity];
-			for (unsigned int i = 0; i < this->size; ++i)
+			string = new char[capacity];
+			for (unsigned int i = 0; i < size; ++i)
 			{
-				this->string[i] = other.string[i];
+				string[i] = other.string[i];
 			}
 		}
 		catch (...)
@@ -65,30 +65,30 @@ public:
 	}
 	MyString& operator=(const MyString& other)
 	{
-		this->capacity = other.capacity;
-		this->size = other.size;
-		delete[] this->string;
-		this->string = new char[this->capacity];
-		for (unsigned int i = 0; i < this->size; ++i)
+		capacity = other.capacity;
+		size = other.size;
+		delete[] string;
+		string = new char[capacity];
+		for (unsigned int i = 0; i < size; ++i)
 		{
-			this->string[i] = other.string[i];
+			string[i] = other.string[i];
 		}
 		return *this;
 	}
 	MyString(MyString&& other) noexcept
 	{
-		this->size = other.size;
-		this->capacity = other.capacity;
-		delete[] this->string;
-		this->string = other.string;
+		size = other.size;
+		capacity = other.capacity;
+		delete[] string;
+		string = other.string;
 		other.string = nullptr;
 	}
 	MyString& operator=(MyString&& other) noexcept
 	{
-		this->size = other.size;
-		this->capacity = other.capacity;
-		delete[] this->string;
-		this->string = other.string;
+		size = other.size;
+		capacity = other.capacity;
+		delete[] string;
+		string = other.string;
 		other.string = nullptr;
 		return *this;
 	}
@@ -99,17 +99,17 @@ public:
 public:
 	char& operator[](const size_t& index)
 	{
-		if (index < 0 || index >= this->size)
+		if (index < 0 || index >= size)
 			throw std::out_of_range("out of range");
-		return this->string[index];
+		return string[index];
 	}
 	bool operator==(const MyString& other) const
 	{
-		if (this->size != other.size)
+		if (size != other.size)
 			return false;
-		for (unsigned int i = 0; i < this->size; ++i)
+		for (unsigned int i = 0; i < size; ++i)
 		{
-			if (this->string[i] != other.string[i])
+			if (string[i] != other.string[i])
 				return false;
 		}
 		return true;
@@ -120,25 +120,25 @@ public:
 	}
 	MyString& operator+=(const MyString& other)
 	{
-		if (this->capacity >= other.size + this->size)
+		if (capacity >= other.size + size)
 		{
-			for (unsigned int i = this->size, j = 0; i < other.size; ++i, ++j)
+			for (unsigned int i = size, j = 0; i < other.size; ++i, ++j)
 			{
-				this->string[i] = other.string[j];
+				string[i] = other.string[j];
 			}
-			this->size += other.size;
+			size += other.size;
 			return *this;
 		}
-		MyString new_string(this->size + other.size);
-		for (unsigned int i = 0; i < this->size; ++i) 
-			new_string.string[i] = this->string[i];
+		MyString new_string(size + other.size);
+		for (unsigned int i = 0; i < size; ++i) 
+			new_string.string[i] = string[i];
 		for (unsigned int i = 0; i < other.size; ++i) 
-			new_string.string[this->size + i] = other.string[i];
-		this->capacity = new_string.capacity;
-		this->size = new_string.size;
+			new_string.string[size + i] = other.string[i];
+		capacity = new_string.capacity;
+		size = new_string.size;
 		
-		delete[] this->string;
-		this->string = new_string.string;
+		delete[] string;
+		string = new_string.string;
 		new_string.string = nullptr;
 	}
 	friend std::ostream& operator<<(std::ostream& out, const MyString& string)
@@ -152,22 +152,22 @@ public:
 public:
 	size_t get_size()
 	{
-		return this->size;
+		return size;
 	}
 	size_t get_capacity()
 	{
-		return this->capacity;
+		return capacity;
 	}
 	void set_string(const char* other)
 	{
 		size_t size_len = strlen(other);
-		if (size_len <= this->capacity)
+		if (size_len <= capacity)
 		{
 			for (unsigned int i = 0; i < size_len; ++i)
 			{
-				this->string[i] = other[i];
+				string[i] = other[i];
 			}
-			this->size = size_len;
+			size = size_len;
 			return;
 		}
 		MyString new_string(size_len + 10);
@@ -176,125 +176,125 @@ public:
 		{
 			new_string.string[i] = other[i];
 		}
-		delete[] this->string;
-		this->size = new_string.size;
-		this->capacity = new_string.capacity;
-		this->string = new_string.string;
+		delete[] string;
+		size = new_string.size;
+		capacity = new_string.capacity;
+		string = new_string.string;
 		new_string.string = nullptr;
 	}
 	void resize(const size_t& new_size)
 	{
-		if (new_size < 0 || new_size >= this->size)
+		if (new_size < 0 || new_size >= size)
 			throw std::out_of_range("out of range");
-		this->size = new_size;
+		size = new_size;
 	}
 	void shrink_to_fit()
 	{
-		if (this->size == this->capacity)
+		if (size == capacity)
 			return;
-		MyString new_string(this->size);
-		for (unsigned int i = 0; i < this->size; ++i)
+		MyString new_string(size);
+		for (unsigned int i = 0; i < size; ++i)
 		{
-			new_string.string[i] = this->string[i];
+			new_string.string[i] = string[i];
 		}
-		this->capacity = new_string.capacity;
-		this->size = new_string.size;
-		delete[] this->string;
-		this->string = new_string.string;
+		capacity = new_string.capacity;
+		size = new_string.size;
+		delete[] string;
+		string = new_string.string;
 		new_string.string = nullptr;
 	}
 	bool empty() noexcept
 	{
-		return this->size == 0;
+		return size == 0;
 	}
 	void erase(const size_t& index)
 	{
-		if (this->size == 0)
+		if (size == 0)
 			throw std::out_of_range("Can't erase, arr empty!");
-		if(index < 0 || index >= this->size)
+		if(index < 0 || index >= size)
 			throw std::out_of_range("out of range");
-		for (unsigned int i = index; i < this->size - 1; ++i)
+		for (unsigned int i = index; i < size - 1; ++i)
 		{
-			std::swap(this->string[i], this->string[i + 1]);
+			std::swap(string[i], string[i + 1]);
 		}
-		this->size--;
+		size--;
 	}
 	void pop_back()
 	{
-		if (this->size == 0)
+		if (size == 0)
 			return; // nothing
-		this->size--;
+		size--;
 	}
 	void push_back(const char& ch)
 	{
-		if (this->size + 1 <= this->capacity)
+		if (size + 1 <= capacity)
 		{
-			this->string[this->size++] = ch;
+			string[size++] = ch;
 			return;
 		}
-		MyString new_vector(this->capacity + 20); // add some capacity
-		new_vector.size = this->capacity + 1;
-		for (unsigned int i = 0; i < this->size; ++i)
+		MyString new_vector(capacity + 20); // add some capacity
+		new_vector.size = capacity + 1;
+		for (unsigned int i = 0; i < size; ++i)
 		{
-			new_vector.string[i] = this->string[i];
+			new_vector.string[i] = string[i];
 		}
 		new_vector.string[new_vector.size - 1] = ch;
-		this->capacity = new_vector.capacity;
-		this->size = new_vector.size;
-		delete[] this->string;
-		this->string = new_vector.string;
+		capacity = new_vector.capacity;
+		size = new_vector.size;
+		delete[] string;
+		string = new_vector.string;
 		new_vector.string = nullptr;
 	}
 	void insert(const char& ch, const size_t& index)
 	{
-		if (index >= this->size || index < 0)
+		if (index >= size || index < 0)
 			throw std::out_of_range("out of range");
-		if (this->size + 1 <= this->capacity)
+		if (size + 1 <= capacity)
 		{
-			for (unsigned int i = this->size; i >= 0; --i)
+			for (unsigned int i = size; i >= 0; --i)
 			{
 				if (i == index)
 				{
-					this->string[i] = ch;
-					this->size++;
+					string[i] = ch;
+					size++;
 					return;
 				}
-				std::swap(this->string[i], this->string[i - 1]);
+				std::swap(string[i], string[i - 1]);
 			}
 		}
-		MyString new_string(this->capacity + 20); // add some capacity
-		new_string.size = this->capacity + 1;
-		for (unsigned int i = 0, j = 0; i < this->size; ++i, ++j)
+		MyString new_string(capacity + 20); // add some capacity
+		new_string.size = capacity + 1;
+		for (unsigned int i = 0, j = 0; i < size; ++i, ++j)
 		{
 			if (index == i)
 			{
 				new_string.string[j] = ch;
 				j++;
 			}	
-			new_string.string[j] = this->string[i];
+			new_string.string[j] = string[i];
 		}
-		this->capacity = new_string.capacity;
-		this->size = new_string.size;
-		delete[] this->string;
-		this->string = new_string.string;
+		capacity = new_string.capacity;
+		size = new_string.size;
+		delete[] string;
+		string = new_string.string;
 		new_string.string = nullptr;
 	}
 	void slice(const size_t& start, const size_t& end)
 	{
-		if (start < 0 || start >= this->size)
+		if (start < 0 || start >= size)
 			throw std::out_of_range("out of range");
-		if (end < 0 || end >= this->size)
+		if (end < 0 || end >= size)
 			throw std::out_of_range("out of range");
 		if (start >= end)
 			throw std::out_of_range("start > end");
 		for (unsigned int i = start, j = 0; i < end; ++i, ++j)
 		{
-			this->string[j] = this->string[i];
+			string[j] = string[i];
 		}
-		this->size = end - start;
+		size = end - start;
 	}
 	void clear()
 	{
-		this->size = 0;
+		size = 0;
 	}
 };
